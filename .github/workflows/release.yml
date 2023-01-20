@@ -61,7 +61,7 @@ jobs:
           python -m venv venv-test-pypi
           venv-test-pypi/bin/python -m pip install --index-url https://test.pypi.org/simple/ test_release_workflow
           # check import
-          venv-test-pypi/bin/python -c "import test_release_workflow;print(test_release_workflow.__version__)"
+          venv-test-pypi/bin/python -c "import test_release_workflow; assert test_release_workflow.__version__ == '${{  github.ref_name }}'"
 
   publish:
     name: Upload release to PyPI
