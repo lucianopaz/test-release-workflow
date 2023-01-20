@@ -25,7 +25,7 @@ jobs:
           python -m venv venv-sdist
           venv-sdist/bin/python -m pip install ../dist/test_release_workflow*.tar.gz
           # check import
-          venv-sdist/bin/python -c "import test_release_workflow;print(test_release_workflow.__version__)"
+          venv-sdist/bin/python -c "import test_release_workflow; assert test_release_workflow.__version__ == '${{  github.ref_name }}'"
       - name: Check the bdist installs and imports
         run: |
           mkdir -p test-bdist
@@ -33,7 +33,7 @@ jobs:
           python -m venv venv-bdist
           venv-bdist/bin/python -m pip install ../dist/test_release_workflow*.whl
           # check import
-          venv-bdist/bin/python -c "import test_release_workflow;print(test_release_workflow.__version__)"
+          venv-bdist/bin/python -c "import test_release_workflow; assert test_release_workflow.__version__ == '${{  github.ref_name }}'"
       - uses: actions/upload-artifact@v3
         with:
           name: artifact
@@ -65,7 +65,7 @@ jobs:
 
   publish:
     name: Upload release to PyPI
-    needs: [build]
+    needs: [build, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
